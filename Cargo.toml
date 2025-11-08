@@ -1,0 +1,98 @@
+[package]
+name = "sentiment_backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async traits
+async-trait = "0.1"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Date/time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Environment variables
+dotenv = "0.15"
+
+# URL encoding
+urlencoding = "2.1"
+
+# Futures utilities
+futures = "0.3"
+
+[[example]]
+name = "sentiment_example"
+path = "examples/sentiment_example.rs"
+
+[[example]]
+name = "sentiment_to_supabase"
+path = "examples/sentiment_to_supabase.rs"
+
+[[example]]
+name = "fundamentals_aapl_example"
+path = "examples/fundamentals_aapl_example.rs"
+
+[[example]]
+name = "fundamentals_to_supabase"
+path = "examples/fundamentals_to_supabase.rs"
+
+[[example]]
+name = "regime_aapl_example"
+path = "examples/regime_aapl_example.rs"
+
+[[example]]
+name = "regime_aapl_mock_example"
+path = "examples/regime_aapl_mock_example.rs"
+
+[[example]]
+name = "regime_to_supabase"
+path = "examples/regime_to_supabase.rs"
+
+[[example]]
+name = "regime_to_supabase_real"
+path = "examples/regime_to_supabase_real.rs"
+
+[[example]]
+name = "regime_save_to_db"
+path = "examples/regime_save_to_db.rs"
+
+[[example]]
+name = "regime_analysis_to_supabase"
+path = "examples/regime_analysis_to_supabase.rs"
+
+[[example]]
+name = "invite_list_simple"
+path = "examples/invite_list_simple.rs"
+
+[[example]]
+name = "invite_list_to_supabase"
+path = "examples/invite_list_to_supabase.rs"
+
+[[example]]
+name = "timing_analysis_batch"
+path = "examples/timing_analysis_batch.rs"
+
+[[example]]
+name = "fundamentals_batch_analysis"
+path = "examples/fundamentals_batch_analysis.rs"
+
+[[example]]
+name = "fundamentals_status_check"
+path = "examples/fundamentals_status_check.rs"

@@ -1,0 +1,41 @@
+GENERAL
+This project uses Rust for AWS Lambda functions. Use idiomatic Rust and modern crates. Prefer small diffs; show only modified code unless asked for the full file. Respond in concise, structured Markdown with technical reasoning only.
+
+CODING STANDARDS
+All code must compile and pass cargo fmt, cargo clippy -- -D warnings, and cargo test.
+Use Result<T,E> for error handling with thiserror for custom types and anyhow for context.
+Log using tracing. Use serde_json for JSON. Avoid blocking I/O in async; use tokio::task::spawn_blocking when needed. No unwrap() or expect() in production.
+
+TESTING & QUALITY
+Every public function must have a unit test. When fixing a bug:
+1. First write a failing test reproducing it.
+2. Apply the minimal fix.
+3. Keep the test permanently.
+Integration tests must not call real AWS services. Use mockall for trait mocks and wiremock for HTTP APIs. Use insta for snapshot tests.
+
+DOCUMENTATION MAINTENANCE
+All internal rule and documentation files are located in /src/RULES/.
+Maintain the following files there:
+- /src/RULES/DECISIONS.md → design and architecture reasoning.
+- /src/RULES/CONTRACTS.md → invariants, I/O guarantees, API formats.
+- /src/RULES/PITFALLS.md → known mistakes or regressions.
+- /src/RULES/DATA_SOURCES.md → approved external data subscriptions, endpoints, limits, and engine mappings.
+Whenever a decision, invariant, or fix occurs, also propose an entry to the right file using:
+[YYYY-MM-DD] <short title>
+What changed:
+Why:
+Affected modules:
+
+SECURITY & CONFIG
+Never hardcode secrets. Use AWS environment variables or Secrets Manager.
+Timestamps must be UTC (RFC3339).
+Example IAM roles must follow least privilege.
+Validate all JSON inputs before processing.
+The .env file contains API_KEYS and configuration for external services. Polygon.io Developer,  FMP Premium,  Finnhub Estimates,  Finnbub Marketdata, Alpha Vantage and Openai Chatgpt.
+Do not write, modify, or delete the .env file
+
+OUTPUT & REVIEW
+For each proposed change, include a short Post-Change Validation section:
+1. Summary of what changed.
+2. Command to test.
+3. Expected outcome.
