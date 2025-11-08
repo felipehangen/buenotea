@@ -1,4 +1,4 @@
-# 🚀 OKTStocks2 - Comprehensive Stock Analysis System
+# 🚀 BuenoTea - Comprehensive Stock Analysis System
 
 **Production-ready stock analysis system with multi-source data integration, real-time analysis, and institutional-grade insights.**
 
