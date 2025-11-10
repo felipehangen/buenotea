@@ -9,6 +9,7 @@ use std::collections::HashMap;
 pub struct TimingRecord {
     pub id: Option<i32>,
     pub symbol: String,
+    pub analysis_date: DateTime<Utc>,
     
     // TTS Analysis Results
     pub tts_score: f64,
@@ -101,6 +102,7 @@ pub struct RawApiResponse {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateTimingRecord {
     pub symbol: String,
+    pub analysis_date: DateTime<Utc>,
     pub tts_score: f64,
     pub trading_signal: String,
     pub confidence_score: f64,
@@ -167,6 +169,7 @@ pub struct CreateTimingRecord {
 #[derive(Debug, Clone, Serialize)]
 pub struct TimingInsert {
     pub symbol: String,
+    pub analysis_date: DateTime<Utc>,
     pub tts_score: f64,
     pub trading_signal: String,
     pub confidence_score: f64,
@@ -215,6 +218,7 @@ impl From<CreateTimingRecord> for TimingInsert {
     fn from(record: CreateTimingRecord) -> Self {
         Self {
             symbol: record.symbol,
+            analysis_date: record.analysis_date,
             tts_score: record.tts_score,
             trading_signal: record.trading_signal,
             confidence_score: record.confidence_score,
