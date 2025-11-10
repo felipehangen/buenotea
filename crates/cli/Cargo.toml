@@ -1,0 +1,53 @@
+[package]
+name = "buenotea-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+buenotea-timing.workspace = true
+buenotea-sentiment.workspace = true
+buenotea-regime.workspace = true
+buenotea-fundamentals.workspace = true
+buenotea-invite-list.workspace = true
+
+# CLI
+clap.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+[[bin]]
+name = "timing"
+path = "src/bin/timing.rs"
+
+[[bin]]
+name = "sentiment"
+path = "src/bin/sentiment.rs"
+
+[[bin]]
+name = "regime"
+path = "src/bin/regime.rs"
+
+[[bin]]
+name = "fundamentals"
+path = "src/bin/fundamentals.rs"
+
+[[bin]]
+name = "invite-list"
+path = "src/bin/invite-list.rs"
+

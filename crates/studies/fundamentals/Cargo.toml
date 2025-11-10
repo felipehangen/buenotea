@@ -1,0 +1,53 @@
+[package]
+name = "buenotea-fundamentals"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+
+# HTTP client
+reqwest.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Date/time handling
+chrono.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+# URL encoding
+urlencoding.workspace = true
+
+[[example]]
+name = "fundamentals_aapl_example"
+path = "examples/fundamentals_aapl_example.rs"
+
+[[example]]
+name = "fundamentals_to_supabase"
+path = "examples/fundamentals_to_supabase.rs"
+
+[[example]]
+name = "fundamentals_batch_analysis"
+path = "examples/fundamentals_batch_analysis.rs"
+
+[[example]]
+name = "fundamentals_status_check"
+path = "examples/fundamentals_status_check.rs"
+

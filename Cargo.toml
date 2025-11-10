@@ -1,9 +1,24 @@
-[package]
-name = "sentiment_backend"
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/infrastructure",
+    "crates/studies/timing",
+    "crates/studies/sentiment",
+    "crates/studies/regime",
+    "crates/studies/fundamentals",
+    "crates/studies/invite-list",
+    "crates/cli",
+    "crates/lambda",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+authors = ["Felipe Hangen"]
+license = "MIT"
 
-[dependencies]
+[workspace.dependencies]
 # Async runtime
 tokio = { version = "1.0", features = ["full"] }
 
@@ -37,62 +52,19 @@ urlencoding = "2.1"
 # Futures utilities
 futures = "0.3"
 
-[[example]]
-name = "sentiment_example"
-path = "examples/sentiment_example.rs"
+# Lambda runtime
+lambda_runtime = "0.8"
+aws_lambda_events = "0.10"
 
-[[example]]
-name = "sentiment_to_supabase"
-path = "examples/sentiment_to_supabase.rs"
+# CLI
+clap = { version = "4.0", features = ["derive"] }
 
-[[example]]
-name = "fundamentals_aapl_example"
-path = "examples/fundamentals_aapl_example.rs"
+# Internal crates
+buenotea-core = { path = "crates/core" }
+buenotea-infrastructure = { path = "crates/infrastructure" }
+buenotea-timing = { path = "crates/studies/timing" }
+buenotea-sentiment = { path = "crates/studies/sentiment" }
+buenotea-regime = { path = "crates/studies/regime" }
+buenotea-fundamentals = { path = "crates/studies/fundamentals" }
+buenotea-invite-list = { path = "crates/studies/invite-list" }
 
-[[example]]
-name = "fundamentals_to_supabase"
-path = "examples/fundamentals_to_supabase.rs"
-
-[[example]]
-name = "regime_aapl_example"
-path = "examples/regime_aapl_example.rs"
-
-[[example]]
-name = "regime_aapl_mock_example"
-path = "examples/regime_aapl_mock_example.rs"
-
-[[example]]
-name = "regime_to_supabase"
-path = "examples/regime_to_supabase.rs"
-
-[[example]]
-name = "regime_to_supabase_real"
-path = "examples/regime_to_supabase_real.rs"
-
-[[example]]
-name = "regime_save_to_db"
-path = "examples/regime_save_to_db.rs"
-
-[[example]]
-name = "regime_analysis_to_supabase"
-path = "examples/regime_analysis_to_supabase.rs"
-
-[[example]]
-name = "invite_list_simple"
-path = "examples/invite_list_simple.rs"
-
-[[example]]
-name = "invite_list_to_supabase"
-path = "examples/invite_list_to_supabase.rs"
-
-[[example]]
-name = "timing_analysis_batch"
-path = "examples/timing_analysis_batch.rs"
-
-[[example]]
-name = "fundamentals_batch_analysis"
-path = "examples/fundamentals_batch_analysis.rs"
-
-[[example]]
-name = "fundamentals_status_check"
-path = "examples/fundamentals_status_check.rs"

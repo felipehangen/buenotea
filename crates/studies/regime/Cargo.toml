@@ -1,0 +1,69 @@
+[package]
+name = "buenotea-regime"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+
+# HTTP client
+reqwest.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Date/time handling
+chrono.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+# URL encoding
+urlencoding.workspace = true
+
+[[example]]
+name = "regime_aapl_example"
+path = "examples/regime_aapl_example.rs"
+
+[[example]]
+name = "regime_aapl_mock_example"
+path = "examples/regime_aapl_mock_example.rs"
+
+[[example]]
+name = "regime_to_supabase"
+path = "examples/regime_to_supabase.rs"
+
+[[example]]
+name = "regime_to_supabase_real"
+path = "examples/regime_to_supabase_real.rs"
+
+[[example]]
+name = "regime_save_to_db"
+path = "examples/regime_save_to_db.rs"
+
+[[example]]
+name = "regime_analysis_to_supabase"
+path = "examples/regime_analysis_to_supabase.rs"
+
+[[example]]
+name = "market_regime_analysis"
+path = "examples/market_regime_analysis.rs"
+
+[[example]]
+name = "market_regime_to_supabase"
+path = "examples/market_regime_to_supabase.rs"
+

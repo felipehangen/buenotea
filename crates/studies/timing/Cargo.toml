@@ -1,0 +1,47 @@
+[package]
+name = "buenotea-timing"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+
+# HTTP client
+reqwest.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Async runtime
+tokio.workspace = true
+async-trait.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Date/time handling
+chrono.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+# URL encoding
+urlencoding.workspace = true
+
+[[example]]
+name = "timing_analysis_batch"
+path = "examples/timing_analysis_batch.rs"
+
+[[example]]
+name = "timing_batch_to_supabase"
+path = "examples/timing_batch_to_supabase.rs"
+
