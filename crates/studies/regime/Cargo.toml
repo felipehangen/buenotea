@@ -22,6 +22,7 @@ tokio.workspace = true
 
 # Logging
 tracing.workspace = true
+tracing-subscriber.workspace = true
 
 # Date/time handling
 chrono.workspace = true
@@ -66,4 +67,8 @@ path = "examples/market_regime_analysis.rs"
 [[example]]
 name = "market_regime_to_supabase"
 path = "examples/market_regime_to_supabase.rs"
+
+[[example]]
+name = "market_regime_batch_to_supabase"
+path = "examples/market_regime_batch_to_supabase.rs"
 
