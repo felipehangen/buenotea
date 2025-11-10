@@ -71,3 +71,7 @@ path = "examples/sentiment_test_subset.rs"
 name = "sentiment_batch_to_supabase"
 path = "examples/sentiment_batch_to_supabase.rs"
 
+[[example]]
+name = "sentiment_invite_list_batch"
+path = "examples/sentiment_invite_list_batch.rs"
+
