@@ -1,0 +1,33 @@
+[package]
+name = "buenotea-infrastructure"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+
+# HTTP client
+reqwest.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Date/time handling
+chrono.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+

@@ -1,0 +1,68 @@
+[package]
+name = "buenotea-sentiment"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+
+# HTTP client
+reqwest.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Date/time handling
+chrono.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+# URL encoding
+urlencoding.workspace = true
+
+# Futures
+futures.workspace = true
+
+[[example]]
+name = "sentiment_example"
+path = "examples/sentiment_example.rs"
+
+[[example]]
+name = "sentiment_to_supabase"
+path = "examples/sentiment_to_supabase.rs"
+
+[[example]]
+name = "sentiment_batch_analysis"
+path = "examples/sentiment_batch_analysis.rs"
+
+[[example]]
+name = "sentiment_batch_parallel"
+path = "examples/sentiment_batch_parallel.rs"
+
+[[example]]
+name = "sentiment_batch_robust"
+path = "examples/sentiment_batch_robust.rs"
+
+[[example]]
+name = "sentiment_force_rerun"
+path = "examples/sentiment_force_rerun.rs"
+
+[[example]]
+name = "sentiment_test_subset"
+path = "examples/sentiment_test_subset.rs"
+

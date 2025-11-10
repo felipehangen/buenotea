@@ -1,0 +1,58 @@
+[package]
+name = "buenotea-lambda"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+buenotea-core.workspace = true
+buenotea-infrastructure.workspace = true
+buenotea-timing.workspace = true
+buenotea-sentiment.workspace = true
+buenotea-regime.workspace = true
+buenotea-fundamentals.workspace = true
+buenotea-invite-list.workspace = true
+
+# Lambda runtime
+lambda_runtime.workspace = true
+aws_lambda_events.workspace = true
+
+# Async runtime
+tokio.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error handling
+anyhow.workspace = true
+
+# Environment variables
+dotenv.workspace = true
+
+[[bin]]
+name = "sentiment-batch"
+path = "src/bin/sentiment-batch.rs"
+
+[[bin]]
+name = "fundamentals-batch"
+path = "src/bin/fundamentals-batch.rs"
+
+[[bin]]
+name = "regime-batch"
+path = "src/bin/regime-batch.rs"
+
+[[bin]]
+name = "timing-batch"
+path = "src/bin/timing-batch.rs"
+
+[[bin]]
+name = "invite-list-batch"
+path = "src/bin/invite-list-batch.rs"
+
