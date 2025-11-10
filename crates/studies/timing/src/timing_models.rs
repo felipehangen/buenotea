@@ -12,6 +12,7 @@ pub fn create_timing_record_with_tracking(
 ) -> CreateTimingRecord {
     CreateTimingRecord {
         symbol: tts_result.symbol,
+        analysis_date: tts_result.timestamp,
         tts_score: tts_result.tts_score,
         trading_signal: format!("{:?}", tts_result.trading_signal),
         confidence_score: tts_result.confidence_score,

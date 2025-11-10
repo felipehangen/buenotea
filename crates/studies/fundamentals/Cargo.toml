@@ -22,6 +22,7 @@ tokio.workspace = true
 
 # Logging
 tracing.workspace = true
+tracing-subscriber.workspace = true
 
 # Date/time handling
 chrono.workspace = true
@@ -50,4 +51,8 @@ path = "examples/fundamentals_batch_analysis.rs"
 [[example]]
 name = "fundamentals_status_check"
 path = "examples/fundamentals_status_check.rs"
+
+[[example]]
+name = "fundamentals_batch_to_supabase"
+path = "examples/fundamentals_batch_to_supabase.rs"
 

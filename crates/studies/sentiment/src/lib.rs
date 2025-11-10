@@ -4,11 +4,13 @@
 
 pub mod calculator;
 pub mod models;
+pub mod sentiment_models;
 pub mod sentiment_storage;
 
 // Re-export main types for easy access
 pub use calculator::QSSCalculator;
 pub use models::*;
+pub use sentiment_models::create_sentiment_record_with_tracking;
 pub use sentiment_storage::SentimentStorage;
 
 #[cfg(test)]
