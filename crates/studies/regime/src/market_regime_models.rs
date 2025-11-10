@@ -143,6 +143,75 @@ impl MarketRegimeRecord {
     }
 }
 
+/// Helper function to create market regime record from MarketRegimeResult with ChatGPT analysis
+/// This function lives in the regime crate to avoid circular dependencies
+pub fn create_market_regime_record_with_tracking(
+    result: MarketRegimeResult,
+    chatgpt_analysis: Option<ChatGPTMarketAnalysis>,
+) -> buenotea_infrastructure::market_regime_models::CreateMarketRegimeRecord {
+    buenotea_infrastructure::market_regime_models::CreateMarketRegimeRecord {
+        analysis_date: result.timestamp,
+        
+        // Market Regime Classification
+        market_regime: result.market_regime.to_string(),
+        regime_confidence: result.regime_confidence,
+        
+        // Market Context Data
+        spy_price: result.market_context.spy_price,
+        spy_20d_change: result.market_context.spy_20d_change,
+        spy_50d_change: result.market_context.spy_50d_change,
+        vix: result.market_context.vix,
+        market_breadth: result.market_context.market_breadth,
+        
+        // Market Volatility Analysis
+        market_volatility: result.volatility_analysis.market_volatility,
+        volatility_percentile: result.volatility_analysis.volatility_percentile,
+        
+        // Market Trend Analysis
+        short_term_trend: format!("{:?}", result.trend_analysis.short_term),
+        medium_term_trend: format!("{:?}", result.trend_analysis.medium_term),
+        long_term_trend: format!("{:?}", result.trend_analysis.long_term),
+        trend_strength: result.trend_analysis.strength,
+        trend_consistency: result.trend_analysis.consistency,
+        
+        // Market Breadth Analysis
+        advancing_stocks: result.breadth_analysis.advancing_stocks,
+        declining_stocks: result.breadth_analysis.declining_stocks,
+        unchanged_stocks: result.breadth_analysis.unchanged_stocks,
+        new_highs: result.breadth_analysis.new_highs,
+        new_lows: result.breadth_analysis.new_lows,
+        
+        // Sector Analysis
+        technology_performance: result.sector_analysis.technology_performance,
+        healthcare_performance: result.sector_analysis.healthcare_performance,
+        financial_performance: result.sector_analysis.financial_performance,
+        energy_performance: result.sector_analysis.energy_performance,
+        consumer_performance: result.sector_analysis.consumer_performance,
+        
+        // Market Sentiment Indicators
+        fear_greed_index: result.sentiment_indicators.fear_greed_index,
+        put_call_ratio: result.sentiment_indicators.put_call_ratio,
+        margin_debt_trend: result.sentiment_indicators.margin_debt_trend.as_ref().map(|t| format!("{:?}", t)),
+        
+        // Risk Assessment
+        market_risk_level: result.risk_assessment.risk_level.to_string(),
+        market_risk_score: result.risk_assessment.risk_score,
+        max_drawdown_risk: result.risk_assessment.max_drawdown_risk,
+        
+        // AI Analysis
+        chatgpt_regime_analysis: chatgpt_analysis.as_ref().map(|a| a.regime_analysis.clone()),
+        chatgpt_market_outlook: chatgpt_analysis.as_ref().map(|a| a.market_outlook.clone()),
+        chatgpt_risk_assessment: chatgpt_analysis.as_ref().map(|a| a.risk_assessment.clone()),
+        chatgpt_model_used: chatgpt_analysis.as_ref().map(|a| a.model_used.clone()),
+        chatgpt_analysis_timestamp: chatgpt_analysis.as_ref().map(|a| a.analysis_timestamp),
+        
+        // Analysis Metadata
+        data_sources_used: result.metadata.data_sources_used.clone(),
+        analysis_period_days: result.metadata.analysis_period_days,
+        computation_time_ms: result.metadata.computation_time_ms,
+    }
+}
+
 /// ChatGPT analysis for market regime
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatGPTMarketAnalysis {
