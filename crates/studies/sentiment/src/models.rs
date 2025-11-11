@@ -72,6 +72,8 @@ pub struct QSSResult {
     pub timestamp: DateTime<Utc>,
     /// Additional metadata
     pub meta: QSSMeta,
+    /// API tracking information
+    pub api_tracking: QSSApiTracking,
 }
 
 /// Individual component scores that make up the QSS
@@ -138,6 +140,49 @@ pub struct QSSMeta {
     pub relative_to_market: Option<f64>,
     pub relative_to_sector: Option<f64>,
     pub volume_ratio: Option<f64>,
+}
+
+/// API tracking information for transparency and debugging
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct QSSApiTracking {
+    // Earnings API tracking
+    pub earnings_api_url: Option<String>,
+    pub earnings_api_source: String,  // "FMP", "Alpha Vantage", or "None"
+    pub earnings_raw_data: Option<serde_json::Value>,
+    
+    // Price data API tracking
+    pub price_data_api_url: Option<String>,
+    pub price_data_api_source: String,  // "FMP" or "None"
+    pub price_data_raw_data: Option<serde_json::Value>,
+    
+    // Short interest API tracking
+    pub short_interest_api_url: Option<String>,
+    pub short_interest_api_source: String,  // "Finnhub" or "None"
+    pub short_interest_raw_data: Option<serde_json::Value>,
+    
+    // Options flow API tracking
+    pub options_flow_api_url: Option<String>,
+    pub options_flow_api_source: String,  // "FMP" or "None"
+    pub options_flow_raw_data: Option<serde_json::Value>,
+}
+
+impl Default for QSSApiTracking {
+    fn default() -> Self {
+        Self {
+            earnings_api_url: None,
+            earnings_api_source: "None".to_string(),
+            earnings_raw_data: None,
+            price_data_api_url: None,
+            price_data_api_source: "None".to_string(),
+            price_data_raw_data: None,
+            short_interest_api_url: None,
+            short_interest_api_source: "None".to_string(),
+            short_interest_raw_data: None,
+            options_flow_api_url: None,
+            options_flow_api_source: "None".to_string(),
+            options_flow_raw_data: None,
+        }
+    }
 }
 
 /// Historical price data point

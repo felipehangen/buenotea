@@ -37,6 +37,14 @@ struct EarningsData {
     analyst_count: Option<i32>,
 }
 
+// Helper struct for tracking API calls
+#[derive(Debug, Default, Clone)]
+struct ApiCallTracker {
+    url: Option<String>,
+    source: String,
+    raw_response: Option<Value>,
+}
+
 /// Main QSS calculator that combines multiple data sources
 pub struct QSSCalculator {
     client: Client,
@@ -55,20 +63,23 @@ impl QSSCalculator {
         let start_time = Instant::now();
         info!("Starting QSS calculation for {}", symbol);
 
-        // Simplified calculation - using mock data for now
-        // In a real implementation, this would fetch data from APIs
-        
+        // Initialize API tracking
+        let mut earnings_tracker = ApiCallTracker::default();
+        let mut price_tracker = ApiCallTracker::default();
+        let mut short_interest_tracker = ApiCallTracker::default();
+        let mut options_tracker = ApiCallTracker::default();
+
         // Step 1: Calculate earnings revisions (40% weight)
-        let earnings_revisions = self.calculate_earnings_revisions(symbol).await?;
+        let earnings_revisions = self.calculate_earnings_revisions_with_tracking(symbol, &mut earnings_tracker).await?;
         
         // Step 2: Calculate relative strength (30% weight)
-        let relative_strength = self.calculate_relative_strength(symbol).await?;
+        let relative_strength = self.calculate_relative_strength_with_tracking(symbol, &mut price_tracker).await?;
         
         // Step 3: Calculate short interest (20% weight)
-        let short_interest = self.calculate_short_interest(symbol).await?;
+        let short_interest = self.calculate_short_interest_with_tracking(symbol, &mut short_interest_tracker).await?;
         
         // Step 4: Calculate options flow (10% weight)
-        let options_flow = self.calculate_options_flow(symbol).await?;
+        let options_flow = self.calculate_options_flow_with_tracking(symbol, &mut options_tracker).await?;
 
         // Calculate final QSS score
         let components = QSSComponents {
@@ -135,6 +146,22 @@ impl QSSCalculator {
             "no_options_data".to_string(),
         ];
 
+        // Create API tracking from collected data
+        let api_tracking = super::models::QSSApiTracking {
+            earnings_api_url: earnings_tracker.url,
+            earnings_api_source: earnings_tracker.source,
+            earnings_raw_data: earnings_tracker.raw_response,
+            price_data_api_url: price_tracker.url,
+            price_data_api_source: price_tracker.source,
+            price_data_raw_data: price_tracker.raw_response,
+            short_interest_api_url: short_interest_tracker.url,
+            short_interest_api_source: short_interest_tracker.source,
+            short_interest_raw_data: short_interest_tracker.raw_response,
+            options_flow_api_url: options_tracker.url,
+            options_flow_api_source: options_tracker.source,
+            options_flow_raw_data: options_tracker.raw_response,
+        };
+
         Ok(QSSResult {
             symbol: symbol.to_string(),
             qss_score,
@@ -144,6 +171,7 @@ impl QSSCalculator {
             confidence_score,
             timestamp: Utc::now(),
             meta,
+            api_tracking,
         })
     }
 
@@ -964,5 +992,106 @@ impl QSSCalculator {
             "HD" | "MCD" | "NKE" => Some("XLY"), // Consumer Discretionary
             _ => Some("SPY"), // Default to S&P 500 if sector unknown
         }
+    }
+
+    // Wrapper methods that add API tracking to existing calculation methods
+
+    async fn calculate_earnings_revisions_with_tracking(&self, symbol: &str, tracker: &mut ApiCallTracker) -> Result<f64> {
+        // Try Alpha Vantage first
+        if let Ok(alpha_key) = std::env::var("ALPHA_VANTAGE_API_KEY") {
+            let url = format!(
+                "https://www.alphavantage.co/query?function=EARNINGS_ESTIMATES&symbol={}&apikey={}",
+                symbol, alpha_key
+            );
+            tracker.url = Some(url.clone());
+            tracker.source = "Alpha Vantage".to_string();
+            
+            info!("🔍 [API TRACK] Calling Alpha Vantage earnings API: {}", url);
+            match self.client.get(&url).send().await {
+                Ok(response) => {
+                    if let Ok(json) = response.json::<Value>().await {
+                        tracker.raw_response = Some(json.clone());
+                        // Parse the JSON to get earnings score
+                        // (reusing existing logic from get_alpha_vantage_earnings)
+                        if let Some(estimates) = json.get("annualEarningsEstimates")
+                            .or_else(|| json.get("quarterlyEarningsEstimates"))
+                            .and_then(|v| v.as_array())
+                        {
+                            if estimates.len() >= 2 {
+                                let current = estimates[0].get("estimatedEps").and_then(|v| v.as_str()).unwrap_or("0").parse::<f64>().unwrap_or(0.0);
+                                let previous = estimates[1].get("estimatedEps").and_then(|v| v.as_str()).unwrap_or("0").parse::<f64>().unwrap_or(0.0);
+                                if previous != 0.0 {
+                                    let revision = (current - previous) / previous.abs();
+                                    let normalized = revision.max(-1.0).min(1.0);
+                                    info!("✅ [API TRACK] Got earnings from Alpha Vantage: {}", normalized);
+                                    return Ok(normalized);
+                                }
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    warn!("❌ [API TRACK] Alpha Vantage failed: {}", e);
+                }
+            }
+        }
+
+        // Fallback to FMP
+        if let Ok(fmp_key) = std::env::var("FMP_API_KEY") {
+            let url = format!("https://financialmodelingprep.com/api/v3/analyst-estimates/{}?apikey={}", symbol, fmp_key);
+            tracker.url = Some(url.clone());
+            tracker.source = "FMP".to_string();
+            
+            info!("🔍 [API TRACK] Calling FMP API: {}", url);
+            match self.client.get(&url).send().await {
+                Ok(response) => {
+                    if let Ok(json) = response.json::<Value>().await {
+                        tracker.raw_response = Some(json.clone());
+                        if let Some(estimates_array) = json.as_array() {
+                            if estimates_array.len() >= 2 {
+                                let current = estimates_array[0].get("estimatedEps").and_then(|v| v.as_f64()).unwrap_or(0.0);
+                                let previous = estimates_array[1].get("estimatedEps").and_then(|v| v.as_f64()).unwrap_or(0.0);
+                                if previous != 0.0 {
+                                    let revision = (current - previous) / previous.abs();
+                                    let normalized = revision.max(-1.0).min(1.0);
+                                    info!("✅ [API TRACK] Got earnings from FMP: {}", normalized);
+                                    return Ok(normalized);
+                                }
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    warn!("❌ [API TRACK] FMP failed: {}", e);
+                }
+            }
+        }
+
+        tracker.source = "None".to_string();
+        warn!("⚠️  [API TRACK] No earnings data available, using 0.0");
+        Ok(0.0)
+    }
+
+    async fn calculate_relative_strength_with_tracking(&self, symbol: &str, tracker: &mut ApiCallTracker) -> Result<f64> {
+        // Just call existing method and track URL
+        if let Ok(fmp_key) = std::env::var("FMP_API_KEY") {
+            let url = format!("https://financialmodelingprep.com/api/v3/historical-price-full/{}?apikey={}", symbol, fmp_key);
+            tracker.url = Some(url.clone());
+            tracker.source = "FMP".to_string();
+            info!("🔍 [API TRACK] Price data API: {}", url);
+        }
+        self.calculate_relative_strength(symbol).await
+    }
+
+    async fn calculate_short_interest_with_tracking(&self, symbol: &str, tracker: &mut ApiCallTracker) -> Result<f64> {
+        tracker.source = "None".to_string();
+        tracker.url = None;
+        self.calculate_short_interest(symbol).await
+    }
+
+    async fn calculate_options_flow_with_tracking(&self, symbol: &str, tracker: &mut ApiCallTracker) -> Result<f64> {
+        tracker.source = "None".to_string();
+        tracker.url = None;
+        self.calculate_options_flow(symbol).await
     }
 }

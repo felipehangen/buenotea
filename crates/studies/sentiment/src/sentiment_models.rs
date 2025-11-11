@@ -2,13 +2,15 @@
 
 use chrono::Utc;
 
-/// Helper function to create sentiment record from QSSResult with API tracking
+/// Helper function to create sentiment record from QSSResult (now uses API tracking from result)
 /// This function lives in the sentiment crate to avoid circular dependencies
 pub fn create_sentiment_record_with_tracking(
     result: crate::models::QSSResult,
-    api_urls: buenotea_infrastructure::sentiment_models::ApiUrls,
     gpt_explanation: String,
 ) -> buenotea_infrastructure::sentiment_models::CreateSentimentRecord {
+    // Extract API tracking from result
+    let api_tracking = &result.api_tracking;
+    
     buenotea_infrastructure::sentiment_models::CreateSentimentRecord {
         symbol: result.symbol.clone(),
         analysis_date: result.timestamp,
@@ -23,22 +25,22 @@ pub fn create_sentiment_record_with_tracking(
         relative_strength_weight: 0.30,
         short_interest_weight: 0.20,
         options_flow_weight: 0.10,
-        earnings_api_url: api_urls.earnings_api_url,
-        earnings_api_source: api_urls.earnings_api_source,
-        earnings_data_available: api_urls.earnings_data_available,
-        price_data_api_url: api_urls.price_data_api_url,
-        price_data_api_source: api_urls.price_data_api_source,
-        price_data_available: api_urls.price_data_available,
-        short_interest_api_url: api_urls.short_interest_api_url,
-        short_interest_api_source: api_urls.short_interest_api_source,
-        short_interest_data_available: api_urls.short_interest_data_available,
-        options_flow_api_url: api_urls.options_flow_api_url,
-        options_flow_api_source: api_urls.options_flow_api_source,
-        options_flow_data_available: api_urls.options_flow_data_available,
-        earnings_raw_data: api_urls.earnings_raw_data,
-        price_data_raw_data: api_urls.price_data_raw_data,
-        short_interest_raw_data: api_urls.short_interest_raw_data,
-        options_flow_raw_data: api_urls.options_flow_raw_data,
+        earnings_api_url: api_tracking.earnings_api_url.clone(),
+        earnings_api_source: Some(api_tracking.earnings_api_source.clone()),
+        earnings_data_available: api_tracking.earnings_api_url.is_some(),
+        price_data_api_url: api_tracking.price_data_api_url.clone(),
+        price_data_api_source: Some(api_tracking.price_data_api_source.clone()),
+        price_data_available: api_tracking.price_data_api_url.is_some(),
+        short_interest_api_url: api_tracking.short_interest_api_url.clone(),
+        short_interest_api_source: Some(api_tracking.short_interest_api_source.clone()),
+        short_interest_data_available: api_tracking.short_interest_api_url.is_some(),
+        options_flow_api_url: api_tracking.options_flow_api_url.clone(),
+        options_flow_api_source: Some(api_tracking.options_flow_api_source.clone()),
+        options_flow_data_available: api_tracking.options_flow_api_url.is_some(),
+        earnings_raw_data: api_tracking.earnings_raw_data.clone(),
+        price_data_raw_data: api_tracking.price_data_raw_data.clone(),
+        short_interest_raw_data: api_tracking.short_interest_raw_data.clone(),
+        options_flow_raw_data: api_tracking.options_flow_raw_data.clone(),
         data_coverage_percentage: 75.0, // Could be calculated from available data
         computation_time_ms: result.meta.computation_time_ms as i32,
         data_points_count: result.meta.data_points_count as i32,

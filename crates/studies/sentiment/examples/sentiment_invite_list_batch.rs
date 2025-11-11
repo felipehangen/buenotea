@@ -2,7 +2,6 @@
 // This analyzes stocks from the invite_list and saves sentiment signals to sentiment_history
 
 use buenotea_sentiment::{QSSCalculator, SentimentStorage, create_sentiment_record_with_tracking};
-use buenotea_infrastructure::sentiment_models::ApiUrls;
 use buenotea_infrastructure::DatabaseClient;
 use buenotea_core::Result;
 use tokio;
@@ -49,10 +48,10 @@ async fn main() -> Result<()> {
 
     let mut safe_stocks: Vec<Value> = response.json().await?;
     
-    // LIMIT TO FIRST 10 STOCKS FOR TESTING (remove this in production)
-    safe_stocks.truncate(10);
+    // LIMIT TO FIRST 2 STOCKS FOR API TRACKING TEST (change back to 10+ for production)
+    safe_stocks.truncate(2);
     
-    println!("✅ Found {} safe stocks to analyze (limited to 10 for testing)\n", safe_stocks.len());
+    println!("✅ Found {} safe stocks to analyze (limited to 2 for API tracking test)\n", safe_stocks.len());
 
     // Step 2: Run sentiment analysis on all stocks
     println!("🔍 Running sentiment analysis on {} stocks...", safe_stocks.len());
@@ -129,7 +128,6 @@ async fn main() -> Result<()> {
     // Prepare records for batch insertion
     let mut records_to_save = Vec::new();
     for result in results {
-        let api_urls = ApiUrls::default(); // Using default for now
         let gpt_explanation = format!(
             "{} shows {:?} sentiment with QSS score of {:.3}. Confidence: {:.1}%",
             result.symbol,
@@ -140,7 +138,6 @@ async fn main() -> Result<()> {
         
         let record = create_sentiment_record_with_tracking(
             result,
-            api_urls,
             gpt_explanation,
         );
         records_to_save.push(record);
